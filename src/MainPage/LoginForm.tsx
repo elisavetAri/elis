@@ -1,11 +1,16 @@
 import { Grid, Box, Avatar, Link, Card, Button } from '@mui/material';
 import React, { useEffect, useState } from 'react';
 import TextField from '@mui/material/TextField';
-import WelcomePage from './WelcomePage';
 import e from 'express';
+import { useNavigate } from 'react-router-dom';
+import { Provider, useSelector, useDispatch } from 'react-redux'
 
 const LoginForm = () =>{
   const [data, setData] = useState<Array<User>>([]);
+  const [email, setEmail] = useState("")
+  const [password, setPassword] = useState("")
+  const router = useNavigate()
+
   const getData = () => {
     fetch('/bdswiss/signup').then(res => res.json())
   .then(data => setData(data))
@@ -13,36 +18,13 @@ const LoginForm = () =>{
 useEffect(() => {
   getData()
 },[])
-console.log('d', data.map((User)=> User.first_name));
-const [message, setMessage] = useState('');
-const [value, setValue] = useState("");
 
-// const handleChange = (event) => {
-//   setMessage(event.target.value);
-
-//   console.log('value is:', event.target.value);
-// };
-  
-     const [formData, setFormData] = React.useState({
-      first_name: "",
-      last_name:"",
-      email: "",
-      password: "",
-    });
-
-    const validateEmailAndPassword= (event: React.FormEvent<HTMLFormElement>) => {
-      // event.preventDefault();
-      // const test = new FormData(event.currentTarget);
-      // // const example = ({
-      //   email: test.get('email'),
-      //   password: test.get() 
-      // })
-
-     (data.map((user)=> user.email ) && data.map((user)=> user.password )?
-      <WelcomePage></WelcomePage>: 'Please check your credentials' ) 
-    }
-         
-  
+    const validateEmailAndPassword = () : Boolean  => {
+      return  (
+        !!data.find(d => d.email === email && d.password === password)
+    )
+  }
+       
     return(
       <Grid container component="main" sx={{ height: '100vh' }}>
         <Grid
@@ -81,7 +63,8 @@ const [value, setValue] = useState("");
                 name="email"
                 autoComplete="email"
                 autoFocus
-                onChange={e => setValue(e.target.value)}
+                value={email}
+                onChange={e => setEmail(e?.target?.value)}
               />
               <TextField
                 margin="normal"
@@ -92,17 +75,13 @@ const [value, setValue] = useState("");
                 type="password"
                 id="password"
                 autoComplete="current-password"
-                onChange={e => setValue(e.target.value)}
-              />
+                value={password}
+                onChange={e => setPassword(e?.target?.value)}
+                />
               <Button
-              onClick={()=> {validateEmailAndPassword}}
-              >
+              onClick={()=>{validateEmailAndPassword() === true ? router('/welcome'): false}} >
               LOGIN
               </Button>
-              {/* <Button>
-                {
-              (data.map((User)=> User.email) === email ) && (data.map((User)=> User.password) === password))? Navigate()}
-                </Button>  {"Login"} */}
               <Link href={'/welcome'} variant="body1">
                 </Link>
                 <Grid container>

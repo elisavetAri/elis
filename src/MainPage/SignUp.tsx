@@ -2,47 +2,44 @@ import { Grid, Box, Button, Container, CssBaseline, Link, Typography, Alert } fr
 import React, { useEffect, useState } from 'react';
 import TextField from '@mui/material/TextField';
 import LoginForm from './LoginForm';
+import { useNavigate } from 'react-router-dom';
+import { useForm } from "react-hook-form";
 
 const SignUp = () =>{  
   const [data, setData] =  useState<Array<User>>([]);
-
+  const [firstName, setFirstName] = useState("")
+  const [lastName, setLastName] = useState("")
+  const [email, setEmail] = useState("")
+  const [password, setPassword] = useState("")
+  const navigator = useNavigate()
+  
+  const { handleSubmit, register, formState: { errors } } = useForm();
   useEffect(() => {
     fetch('/bdswiss/signup').then(res => res.json()).then(data => setData(data))
   },[])
+
   
-const postMethod : React.FormEventHandler<HTMLFormElement> = (e: React.FormEvent<HTMLFormElement>) => {
-    e.preventDefault();
-        const data = new FormData(e.currentTarget);
+const postMethod  = () => {
     fetch('/bdswiss/signup', {
       method: 'POST',
       headers: {
         'Content-Type': 'application/json',
       },
       body: JSON.stringify({
-        first_name: data.get("first_name"),
-          last_name:data.get('last_name'),
-          email: data.get('email'),
-          password: data.get('password'),
+        first_name: firstName,
+          last_name: lastName,
+          email: email,
+          password: password,
               }),
     })
       .then((res) => res.json())
       .then((result) => setData(result.rows))
       .catch((err) => console.log('error'))
   }
-const onClick = ()=> {
- <LoginForm></LoginForm>
-}  
-    // const handleSubmit = (event: React.FormEvent<HTMLFormElement>) => {
-    //     event.preventDefault();
-    //     const data = new FormData(event.currentTarget);
-    //     console.log({
-    //       first_name: data.get("first_name"),
-    //       last_name:data.get('last_name'),
-    //       email: data.get('email'),
-    //       password: data.get('password'),
-    //     });
-    //   };
-  
+  const success = () =>{
+  alert('You are Successfully registered!! Return to Login')
+  }
+
 return(
     <Container component="main" maxWidth="xs">
       <CssBaseline />
@@ -65,11 +62,13 @@ return(
                 name="first_name"
                 required
                 fullWidth
+                value={firstName}
+                onChange={e => setFirstName(e?.target?.value)}
                 id="first_name"
                 label="First Name"
                 autoFocus
               />  
-              {/* {errors?.first_name && errors.first_name.message} */}
+
             </Grid>
             <Grid item xs={12} sm={6}>
               <TextField
@@ -79,6 +78,8 @@ return(
                 label="Last Name"
                 name="last_name"
                 autoComplete="family-name"
+                value={lastName}
+                onChange={e => setLastName(e?.target?.value)}
               />
             </Grid>
             <Grid item xs={12}>
@@ -89,10 +90,11 @@ return(
                 label="Email Address"
                 name="email"
                 autoComplete="email"
+                value={email}
+                onChange={e => setEmail(e?.target?.value)}
               />
             </Grid>
             <Grid item xs={12}>
-                {/* Adding validation to add strong 8 characters password */}
               <TextField
                 required
                 fullWidth
@@ -101,6 +103,8 @@ return(
                 type="password"
                 id="password"
                 autoComplete="new-password"
+                value={password}
+                onChange={e => setPassword(e?.target?.value)}
               />
             </Grid>
           </Grid>
@@ -109,8 +113,8 @@ return(
             fullWidth
             variant="contained"
             sx={{ mt: 3, mb: 2 }}
-            onClick={() => { console.log('onClick'); }}
-          >
+            onClick={success}
+          >           
             Sign Up
           </Button>
           <Grid container justifyContent="flex-end">
