@@ -13,11 +13,9 @@ const SignUp = () =>{
   const [password, setPassword] = useState("")
   const navigator = useNavigate()
   
-  const { handleSubmit, register, formState: { errors } } = useForm();
   useEffect(() => {
     fetch('/bdswiss/signup').then(res => res.json()).then(data => setData(data))
   },[])
-
   
 const postMethod  = () => {
     fetch('/bdswiss/signup', {
@@ -113,7 +111,7 @@ return(
             fullWidth
             variant="contained"
             sx={{ mt: 3, mb: 2 }}
-            onClick={success}
+            onClick={()=>{success}}
           >           
             Sign Up
           </Button>
